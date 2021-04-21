@@ -35,10 +35,19 @@ public class StockMonitor {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(Calendar.getInstance().getTime());
+
         Date endDate = calendar.getTime();
         calendar.add(Calendar.DATE, -30);
+
         Date startDate = calendar.getTime();
+        SalesTotal total = getSalesTotal(product, startDate, endDate, new SalesHistory(httpService));
+        if(product.getStock() - quantity <= (int) ((double) (total.getTotal() / 30) * product.getLeadTime()))
+            alert.send(product);
+    }
+
+    private SalesTotal getSalesTotal(Product product, Date startDate, Date endDate, SalesHistory salesHistory) {
         DateFormat format = new SimpleDateFormat("M/d/yyyy");
+
         Map<String, Object> params1 = new HashMap<>(){{
             put("productId", product.getId());
             put("startDate", format.format(startDate));
@@ -50,10 +59,9 @@ public class StockMonitor {
         for (String key : params1.keySet()) {
             paramString1 += key + "=" + params1.get(key).toString() + "&";
         }
-        String result1 = httpService.fetchResponse("https://gjtvhjg8e9.execute-api.us-east-2.amazonaws.com/default/sales", paramString1);
+        String result1 = salesHistory.getHttpService().fetchResponse("https://gjtvhjg8e9.execute-api.us-east-2.amazonaws.com/default/sales", paramString1);
         SalesTotal total = new Gson().fromJson(result1, SalesTotal.class);
-        if(product.getStock() - quantity <= (int) ((double) (total.getTotal() / 30) * product.getLeadTime()))
-            alert.send(product);
+        return total;
     }
 
     private String fetchResponse(String baseUrl, String query) {
