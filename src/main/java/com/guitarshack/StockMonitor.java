@@ -22,6 +22,14 @@ public class StockMonitor {
     }
 
     public void productSold(int productId, int quantity) {
+        Product product = getProduct(productId, httpService);
+
+        if (product.getStock() - quantity <= reorderThreshold.getForProduct(product)) {
+            alert.send(product);
+        }
+    }
+
+    private Product getProduct(int productId, HttpService httpService) {
         String baseURL = "https://6hr1390c1j.execute-api.us-east-2.amazonaws.com/default/product";
         Map<String, Object> params = new HashMap<>() {{
             put("id", productId);
@@ -33,9 +41,6 @@ public class StockMonitor {
         }
         String result = httpService.fetchResponse(baseURL, paramString);
         Product product = new Gson().fromJson(result, Product.class);
-
-        if (product.getStock() - quantity <= reorderThreshold.getForProduct(product)) {
-            alert.send(product);
-        }
+        return product;
     }
 }
