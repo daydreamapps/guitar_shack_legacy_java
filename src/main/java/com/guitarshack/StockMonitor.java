@@ -29,7 +29,7 @@ public class StockMonitor {
         String result = httpService.fetchResponse(baseURL, paramString);
         Product product = new Gson().fromJson(result, Product.class);
 
-        if(product.getStock() - quantity <= reorderThreshold.getReorderThreshold(product, httpService)) {
+        if(product.getStock() - quantity <= reorderThreshold.getForProduct(product, httpService)) {
             alert.send(product);
         }
     }

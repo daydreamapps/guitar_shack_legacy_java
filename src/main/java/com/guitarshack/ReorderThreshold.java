@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class ReorderThreshold {
 
-    int getReorderThreshold(Product product, HttpService httpService) {
+    int getForProduct(Product product, HttpService httpService) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(Calendar.getInstance().getTime());
 
