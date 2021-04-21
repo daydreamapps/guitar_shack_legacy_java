@@ -15,10 +15,6 @@ public class SalesHistory {
         this.httpService = httpService;
     }
 
-    public HttpService getHttpService() {
-        return httpService;
-    }
-
     SalesTotal getSalesTotal(Product product, Date startDate, Date endDate) {
         DateFormat format = new SimpleDateFormat("M/d/yyyy");
 
@@ -33,7 +29,7 @@ public class SalesHistory {
         for (String key : params1.keySet()) {
             paramString1 += key + "=" + params1.get(key).toString() + "&";
         }
-        String result1 = getHttpService().fetchResponse("https://gjtvhjg8e9.execute-api.us-east-2.amazonaws.com/default/sales", paramString1);
+        String result1 = httpService.fetchResponse("https://gjtvhjg8e9.execute-api.us-east-2.amazonaws.com/default/sales", paramString1);
         SalesTotal total = new Gson().fromJson(result1, SalesTotal.class);
         return total;
     }
