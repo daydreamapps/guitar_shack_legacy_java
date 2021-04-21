@@ -11,10 +11,14 @@ public class StockMonitor {
     private final HttpService httpService;
     private final ReorderThreshold reorderThreshold;
 
-    public StockMonitor(Alert alert, HttpService httpService) {
+    public StockMonitor(
+            Alert alert,
+            HttpService httpService,
+            ReorderThreshold reorderThreshold
+    ) {
         this.alert = alert;
         this.httpService = httpService;
-        reorderThreshold = new ReorderThreshold(new SalesHistory(this.httpService));
+        this.reorderThreshold = reorderThreshold;
     }
 
     public void productSold(int productId, int quantity) {
@@ -30,7 +34,7 @@ public class StockMonitor {
         String result = httpService.fetchResponse(baseURL, paramString);
         Product product = new Gson().fromJson(result, Product.class);
 
-        if(product.getStock() - quantity <= reorderThreshold.getForProduct(product)) {
+        if (product.getStock() - quantity <= reorderThreshold.getForProduct(product)) {
             alert.send(product);
         }
     }

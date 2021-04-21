@@ -16,7 +16,7 @@ public class StockMonitorTest {
                 "{\"total\":60}"
         );
 
-        StockMonitor stockMonitor = new StockMonitor(alert, httpService);
+        StockMonitor stockMonitor = new StockMonitor(alert, httpService, new ReorderThreshold(new SalesHistory(httpService)));
         stockMonitor.productSold(811, 53);
 
         verify(alert).send(any());
