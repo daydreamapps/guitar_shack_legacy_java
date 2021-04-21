@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StockMonitor {
+
     private final Alert alert;
 
     public StockMonitor(Alert alert) {
@@ -31,19 +32,10 @@ public class StockMonitor {
         for (String key : params.keySet()) {
             paramString += key + "=" + params.get(key).toString() + "&";
         }
-        HttpRequest request = HttpRequest
-                .newBuilder(URI.create(baseURL + paramString))
-                .build();
-        String result = "";
-        HttpClient httpClient = HttpClient.newHttpClient();
-        HttpResponse<String> response = null;
-        try {
-            response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            result = response.body();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        String result = fetchResponse(baseURL, paramString);
         Product product = new Gson().fromJson(result, Product.class);
+
+
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(Calendar.getInstance().getTime());
         Date endDate = calendar.getTime();
@@ -61,21 +53,28 @@ public class StockMonitor {
         for (String key : params1.keySet()) {
             paramString1 += key + "=" + params1.get(key).toString() + "&";
         }
-        HttpRequest request1 = HttpRequest
-                .newBuilder(URI.create("https://gjtvhjg8e9.execute-api.us-east-2.amazonaws.com/default/sales" + paramString1))
-                .build();
-        String result1 = "";
-        HttpClient httpClient1 = HttpClient.newHttpClient();
-        HttpResponse<String> response1 = null;
-        try {
-            response1 = httpClient1.send(request1, HttpResponse.BodyHandlers.ofString());
-            result1 = response1.body();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        String result1 = fetchResponse("https://gjtvhjg8e9.execute-api.us-east-2.amazonaws.com/default/sales", paramString1);
         SalesTotal total = new Gson().fromJson(result1, SalesTotal.class);
         if(product.getStock() - quantity <= (int) ((double) (total.getTotal() / 30) * product.getLeadTime()))
             alert.send(product);
+    }
+
+    private String fetchResponse(String baseUrl, String query) {
+        HttpRequest request = HttpRequest
+                .newBuilder(URI.create(baseUrl + query))
+                .build();
+
+        String result = "";
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpResponse<String> response = null;
+
+        try {
+            response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            result = response.body();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
 }
