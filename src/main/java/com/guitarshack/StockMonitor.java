@@ -9,11 +9,12 @@ public class StockMonitor {
 
     private final Alert alert;
     private final HttpService httpService;
-    private final ReorderThreshold reorderThreshold = new ReorderThreshold();
+    private final ReorderThreshold reorderThreshold;
 
     public StockMonitor(Alert alert, HttpService httpService) {
         this.alert = alert;
         this.httpService = httpService;
+        reorderThreshold = new ReorderThreshold(new SalesHistory(this.httpService));
     }
 
     public void productSold(int productId, int quantity) {
