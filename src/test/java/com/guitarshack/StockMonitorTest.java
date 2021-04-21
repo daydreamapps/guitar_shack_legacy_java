@@ -1,17 +1,17 @@
 package com.guitarshack;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 public class StockMonitorTest {
 
     @Test
     public void quantitySoldExceedsThreshold_alertSent() {
-        Alert alert = Mockito.mock(Alert.class);
-        HttpService httpService = Mockito.mock(HttpService.class);
-        Mockito.when(httpService.fetchResponse(any(), any())).thenReturn(
+        Alert alert = mock(Alert.class);
+        HttpService httpService = mock(HttpService.class);
+        when(httpService.fetchResponse(any(), any())).thenReturn(
                 "{\"stock\":53, \"id\":811, \"leadTime\":14}",
                 "{\"total\":60}"
         );
@@ -19,6 +19,6 @@ public class StockMonitorTest {
         StockMonitor stockMonitor = new StockMonitor(alert, httpService);
         stockMonitor.productSold(811, 53);
 
-        Mockito.verify(alert).send(any());
+        verify(alert).send(any());
     }
 }
