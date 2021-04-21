@@ -31,13 +31,13 @@ public class StockMonitor {
         Product product = new Gson().fromJson(result, Product.class);
 
 
-        int reorderThreshold = getReorderThreshold(product);
+        int reorderThreshold = getReorderThreshold(product, httpService);
         if(product.getStock() - quantity <= reorderThreshold) {
             alert.send(product);
         }
     }
 
-    private int getReorderThreshold(Product product) {
+    private int getReorderThreshold(Product product, HttpService httpService) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(Calendar.getInstance().getTime());
 
