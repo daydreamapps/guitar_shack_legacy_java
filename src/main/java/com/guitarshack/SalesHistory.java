@@ -23,16 +23,17 @@ public class SalesHistory {
     SalesTotal getSalesTotal(Product product, Date startDate, Date endDate) {
         DateFormat format = new SimpleDateFormat("M/d/yyyy");
 
-        Map<String, Object> params1 = new HashMap<>() {{
+        Map<String, Object> params = new HashMap<>() {{
             put("productId", product.getId());
             put("startDate", format.format(startDate));
             put("endDate", format.format(endDate));
             put("action", "total");
         }};
-        String paramString1 = queryBuilder.getString(params1);
 
-        String result1 = httpService.fetchResponse(baseUrl, paramString1);
-        SalesTotal total = new Gson().fromJson(result1, SalesTotal.class);
-        return total;
+        String paramString = queryBuilder.getString(params);
+
+        String result1 = httpService.fetchResponse(baseUrl, paramString);
+
+        return new Gson().fromJson(result1, SalesTotal.class);
     }
 }
