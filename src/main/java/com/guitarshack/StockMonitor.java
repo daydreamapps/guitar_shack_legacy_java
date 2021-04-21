@@ -1,10 +1,5 @@
 package com.guitarshack;
 
-import com.google.gson.Gson;
-
-import java.util.HashMap;
-import java.util.Map;
-
 public class StockMonitor {
 
     private final Alert alert;
@@ -22,25 +17,10 @@ public class StockMonitor {
     }
 
     public void productSold(int productId, int quantity) {
-        Product product = getProduct(productId, httpService);
+        Product product = new Warehouse(httpService).getProduct(productId);
 
         if (product.getStock() - quantity <= reorderThreshold.getForProduct(product)) {
             alert.send(product);
         }
-    }
-
-    private Product getProduct(int productId, HttpService httpService) {
-        String baseURL = "https://6hr1390c1j.execute-api.us-east-2.amazonaws.com/default/product";
-        Map<String, Object> params = new HashMap<>() {{
-            put("id", productId);
-        }};
-        String paramString = "?";
-
-        for (String key : params.keySet()) {
-            paramString += key + "=" + params.get(key).toString() + "&";
-        }
-        String result = httpService.fetchResponse(baseURL, paramString);
-        Product product = new Gson().fromJson(result, Product.class);
-        return product;
     }
 }
