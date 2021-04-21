@@ -9,10 +9,12 @@ public class DateRange {
     private final Date endDate;
 
     public DateRange(Calendar calendar) {
+        calendar.add(Calendar.YEAR, -1);
+        startDate = calendar.getTime();
+
         endDate = calendar.getTime();
         calendar.add(Calendar.DATE, -30);
 
-        startDate = calendar.getTime();
     }
 
     public Date getStartDate() {
