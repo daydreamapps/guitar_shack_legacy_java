@@ -11,7 +11,7 @@ public class ReorderThreshold {
         this.salesHistory = salesHistory;
     }
 
-    int getForProduct(Product product, HttpService httpService) {
+    int getForProduct(Product product) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(Calendar.getInstance().getTime());
 
