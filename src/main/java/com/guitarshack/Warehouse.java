@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Warehouse {
+
     private final HttpService httpService;
 
     public Warehouse(HttpService httpService) {

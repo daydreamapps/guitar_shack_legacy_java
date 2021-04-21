@@ -15,8 +15,8 @@ public class Program {
 
         monitor = new StockMonitor(
                 alert,
-                httpService,
-                new ReorderThreshold(new SalesHistory(httpService))
+                new ReorderThreshold(new SalesHistory(httpService)),
+                new Warehouse(httpService)
         );
     }
 

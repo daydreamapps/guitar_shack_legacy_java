@@ -3,21 +3,21 @@ package com.guitarshack;
 public class StockMonitor {
 
     private final Alert alert;
-    private final HttpService httpService;
     private final ReorderThreshold reorderThreshold;
+    private final Warehouse warehouse;
 
     public StockMonitor(
             Alert alert,
-            HttpService httpService,
-            ReorderThreshold reorderThreshold
+            ReorderThreshold reorderThreshold,
+            Warehouse warehouse
     ) {
         this.alert = alert;
-        this.httpService = httpService;
         this.reorderThreshold = reorderThreshold;
+        this.warehouse = warehouse;
     }
 
     public void productSold(int productId, int quantity) {
-        Product product = new Warehouse(httpService).getProduct(productId);
+        Product product = warehouse.getProduct(productId);
 
         if (product.getStock() - quantity <= reorderThreshold.getForProduct(product)) {
             alert.send(product);
