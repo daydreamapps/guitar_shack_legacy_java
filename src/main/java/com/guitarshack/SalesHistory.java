@@ -12,10 +12,12 @@ public class SalesHistory {
 
     private final HttpService httpService;
     private final QueryBuilder queryBuilder;
+    private final String baseUrl;
 
-    public SalesHistory(HttpService httpService, QueryBuilder queryBuilder) {
+    public SalesHistory(HttpService httpService, QueryBuilder queryBuilder, String baseUrl) {
         this.httpService = httpService;
         this.queryBuilder = queryBuilder;
+        this.baseUrl = baseUrl;
     }
 
     SalesTotal getSalesTotal(Product product, Date startDate, Date endDate) {
@@ -29,7 +31,7 @@ public class SalesHistory {
         }};
         String paramString1 = queryBuilder.getString(params1);
 
-        String result1 = httpService.fetchResponse("https://gjtvhjg8e9.execute-api.us-east-2.amazonaws.com/default/sales", paramString1);
+        String result1 = httpService.fetchResponse(baseUrl, paramString1);
         SalesTotal total = new Gson().fromJson(result1, SalesTotal.class);
         return total;
     }

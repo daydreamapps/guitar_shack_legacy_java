@@ -16,7 +16,7 @@ public class StockMonitorTest {
                 "{\"total\":60}"
         );
 
-        StockMonitor stockMonitor = new StockMonitor(alert, new ReorderThreshold(new SalesHistory(httpService, new QueryBuilder())), new Warehouse(httpService, new QueryBuilder()));
+        StockMonitor stockMonitor = new StockMonitor(alert, new ReorderThreshold(new SalesHistory(httpService, new QueryBuilder(), "https://gjtvhjg8e9.execute-api.us-east-2.amazonaws.com/default/sales")), new Warehouse(httpService, new QueryBuilder(), "https://6hr1390c1j.execute-api.us-east-2.amazonaws.com/default/product"));
         stockMonitor.productSold(811, 53);
 
         verify(alert).send(any());

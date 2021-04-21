@@ -2,6 +2,9 @@ package com.guitarshack;
 
 public class Program {
 
+    private final static String warehouseBaseURL = "https://6hr1390c1j.execute-api.us-east-2.amazonaws.com/default/product";
+    private final static String SalesHistoryBaseUrl = "https://gjtvhjg8e9.execute-api.us-east-2.amazonaws.com/default/sales";
+
     private static StockMonitor monitor;
 
     static {
@@ -14,10 +17,11 @@ public class Program {
 
         HttpService httpService = new HttpService();
         QueryBuilder queryBuilder = new QueryBuilder();
+
         monitor = new StockMonitor(
                 alert,
-                new ReorderThreshold(new SalesHistory(httpService, queryBuilder)),
-                new Warehouse(httpService, queryBuilder)
+                new ReorderThreshold(new SalesHistory(httpService, queryBuilder, SalesHistoryBaseUrl)),
+                new Warehouse(httpService, queryBuilder, warehouseBaseURL)
         );
     }
 
