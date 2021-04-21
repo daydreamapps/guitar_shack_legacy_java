@@ -31,6 +31,13 @@ public class StockMonitor {
         Product product = new Gson().fromJson(result, Product.class);
 
 
+        int reorderThreshold = getReorderThreshold(product);
+        if(product.getStock() - quantity <= reorderThreshold) {
+            alert.send(product);
+        }
+    }
+
+    private int getReorderThreshold(Product product) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(Calendar.getInstance().getTime());
 
@@ -39,13 +46,7 @@ public class StockMonitor {
 
         Date startDate = calendar.getTime();
         SalesTotal total = new SalesHistory(httpService).getSalesTotal(product, startDate, endDate);
-        if(product.getStock() - quantity <= (int) ((double) (total.getTotal() / 30) * product.getLeadTime()))
-            alert.send(product);
+
+        return (int) ((double) (total.getTotal() / 30) * product.getLeadTime());
     }
-
-    private String fetchResponse(String baseUrl, String query) {
-
-        return httpService.fetchResponse(baseUrl, query);
-    }
-
 }
