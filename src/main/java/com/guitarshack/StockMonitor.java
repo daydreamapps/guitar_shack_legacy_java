@@ -2,11 +2,6 @@ package com.guitarshack;
 
 import com.google.gson.Gson;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -17,9 +12,11 @@ import java.util.Map;
 public class StockMonitor {
 
     private final Alert alert;
+    private final HttpService httpService;
 
-    public StockMonitor(Alert alert) {
+    public StockMonitor(Alert alert, HttpService httpService) {
         this.alert = alert;
+        this.httpService = httpService;
     }
 
     public void productSold(int productId, int quantity) {
@@ -32,7 +29,7 @@ public class StockMonitor {
         for (String key : params.keySet()) {
             paramString += key + "=" + params.get(key).toString() + "&";
         }
-        String result = fetchResponse(baseURL, paramString);
+        String result = httpService.fetchResponse(baseURL, paramString);
         Product product = new Gson().fromJson(result, Product.class);
 
 
@@ -53,28 +50,15 @@ public class StockMonitor {
         for (String key : params1.keySet()) {
             paramString1 += key + "=" + params1.get(key).toString() + "&";
         }
-        String result1 = fetchResponse("https://gjtvhjg8e9.execute-api.us-east-2.amazonaws.com/default/sales", paramString1);
+        String result1 = httpService.fetchResponse("https://gjtvhjg8e9.execute-api.us-east-2.amazonaws.com/default/sales", paramString1);
         SalesTotal total = new Gson().fromJson(result1, SalesTotal.class);
         if(product.getStock() - quantity <= (int) ((double) (total.getTotal() / 30) * product.getLeadTime()))
             alert.send(product);
     }
 
     private String fetchResponse(String baseUrl, String query) {
-        HttpRequest request = HttpRequest
-                .newBuilder(URI.create(baseUrl + query))
-                .build();
 
-        String result = "";
-        HttpClient httpClient = HttpClient.newHttpClient();
-        HttpResponse<String> response = null;
-
-        try {
-            response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            result = response.body();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return result;
+        return httpService.fetchResponse(baseUrl, query);
     }
 
 }
