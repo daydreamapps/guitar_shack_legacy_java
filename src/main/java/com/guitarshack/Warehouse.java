@@ -8,9 +8,11 @@ import java.util.Map;
 public class Warehouse {
 
     private final HttpService httpService;
+    private final QueryBuilder queryBuilder;
 
-    public Warehouse(HttpService httpService) {
+    public Warehouse(HttpService httpService, QueryBuilder queryBuilder) {
         this.httpService = httpService;
+        this.queryBuilder = queryBuilder;
     }
 
     Product getProduct(int productId) {
@@ -18,11 +20,7 @@ public class Warehouse {
         Map<String, Object> params = new HashMap<>() {{
             put("id", productId);
         }};
-        String paramString = "?";
-
-        for (String key : params.keySet()) {
-            paramString += key + "=" + params.get(key).toString() + "&";
-        }
+        String paramString = queryBuilder.getString(params);
         String result = httpService.fetchResponse(baseURL, paramString);
 
         return new Gson().fromJson(result, Product.class);

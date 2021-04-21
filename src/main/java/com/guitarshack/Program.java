@@ -5,7 +5,6 @@ public class Program {
     private static StockMonitor monitor;
 
     static {
-        HttpService httpService = new HttpService();
         Alert alert = product -> {
             // We are faking this for now
             System.out.println(
@@ -13,10 +12,12 @@ public class Program {
                             ". Only " + product.getStock() + " remaining in stock");
         };
 
+        HttpService httpService = new HttpService();
+        QueryBuilder queryBuilder = new QueryBuilder();
         monitor = new StockMonitor(
                 alert,
-                new ReorderThreshold(new SalesHistory(httpService)),
-                new Warehouse(httpService)
+                new ReorderThreshold(new SalesHistory(httpService, queryBuilder)),
+                new Warehouse(httpService, queryBuilder)
         );
     }
 

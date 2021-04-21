@@ -9,26 +9,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SalesHistory {
-    private final HttpService httpService;
 
-    public SalesHistory(HttpService httpService) {
+    private final HttpService httpService;
+    private final QueryBuilder queryBuilder;
+
+    public SalesHistory(HttpService httpService, QueryBuilder queryBuilder) {
         this.httpService = httpService;
+        this.queryBuilder = queryBuilder;
     }
 
     SalesTotal getSalesTotal(Product product, Date startDate, Date endDate) {
         DateFormat format = new SimpleDateFormat("M/d/yyyy");
 
-        Map<String, Object> params1 = new HashMap<>(){{
+        Map<String, Object> params1 = new HashMap<>() {{
             put("productId", product.getId());
             put("startDate", format.format(startDate));
             put("endDate", format.format(endDate));
             put("action", "total");
         }};
-        String paramString1 = "?";
+        String paramString1 = queryBuilder.getString(params1);
 
-        for (String key : params1.keySet()) {
-            paramString1 += key + "=" + params1.get(key).toString() + "&";
-        }
         String result1 = httpService.fetchResponse("https://gjtvhjg8e9.execute-api.us-east-2.amazonaws.com/default/sales", paramString1);
         SalesTotal total = new Gson().fromJson(result1, SalesTotal.class);
         return total;
