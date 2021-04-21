@@ -35,9 +35,4 @@ public class StockMonitor {
             alert.send(product);
         }
     }
-
-    private int getReorderThreshold(Product product, HttpService httpService) {
-
-        return reorderThreshold.getReorderThreshold(product, httpService);
-    }
 }
